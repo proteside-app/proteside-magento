@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * After the "Proteside" configuration section is saved: run an immediate status + config check and
+ * flush the full-page cache so the storefront picks up the new key/pages/channel right away.
+ *
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="admin_system_config_changed_section_proteside">
+        <observer name="proteside_checkout_flush_page_cache" instance="Proteside\Checkout\Observer\FlushPageCache"/>
+    </event>
+</config>

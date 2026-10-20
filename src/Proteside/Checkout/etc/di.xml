@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Dependency injection.
+ *
+ * Note on CSP: the inline bootstrapper and the shield.js tag are rendered through
+ * Magento\Framework\View\Helper\SecureHtmlRenderer (part of magento/framework, always present).
+ * When Magento_Csp is enabled it registers Magento\Csp\Helper\InlineUtil as a processor of that
+ * renderer, so the sha256 of the inline script and the cdn.proteside.com host are whitelisted in
+ * the Content-Security-Policy header; when Magento_Csp is disabled the renderer just emits the
+ * tags. No optional dependency on Magento_Csp classes is needed.
+ *
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="proteside_checkout_status" xsi:type="object">Proteside\Checkout\Console\Command\StatusCommand</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Proteside\Checkout\Console\Command\StatusCommand">
+        <arguments>
+            <argument name="revalidator" xsi:type="object">Proteside\Checkout\Model\Revalidator\Proxy</argument>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface\Proxy</argument>
+        </arguments>
+    </type>
+</config>

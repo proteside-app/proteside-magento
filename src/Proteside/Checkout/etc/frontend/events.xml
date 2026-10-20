@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Storefront injection (the snippet must be the first script content of <head>).
+ *
+ * 1. controller_action_predispatch — decides once per request whether to inject and renders the two
+ *    tags through SecureHtmlRenderer. This happens BEFORE Magento_Csp renders the CSP header
+ *    (Magento_Csp also listens to controller_front_send_response_before and, because modules are
+ *    loaded alphabetically, its observer would run before ours), so the sha256 of the inline
+ *    bootstrapper is already in the dynamic policy collector when the header is built.
+ *
+ * 2. controller_front_send_response_before — injects the prepared markup right after the opening
+ *    <head …> tag of the HTML response. This event fires AFTER the built-in full-page cache stored
+ *    or served the page, so the snippet is never baked into the FPC entry and cached pages always
+ *    receive the current snippet/state (Varnish is different: see README, "Caching").
+ *
+ * Layout XML (head.additional / default.xml) is intentionally NOT used: everything placed there is
+ * rendered after requirejs and the theme's head scripts, which would trip INSTALLATION_ORDER_WARNING.
+ *
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="controller_action_predispatch">
+        <observer name="proteside_checkout_prepare_snippet" instance="Proteside\Checkout\Observer\PrepareSnippet"/>
+    </event>
+    <event name="controller_front_send_response_before">
+        <observer name="proteside_checkout_inject_snippet" instance="Proteside\Checkout\Observer\InjectSnippet"/>
+    </event>
+</config>

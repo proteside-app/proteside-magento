@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Static CSP whitelist (Proteside hosts + sha256 of the bundled bootstrapper). Read by Magento_Csp when it is enabled; ignored otherwise.
+ *
+ *  - script-src : https://cdn.proteside.com (shield.js) + the sha256 of the bundled bootstrapper
+ *                 WITHOUT inline config (bootstrapper 1.1.3, file emitted byte for byte).
+ *  - connect-src: https://app.proteside.com (remote config, status and events sent by shield.js) and
+ *                 https://cdn.proteside.com (shield.js hashes the external scripts of the page, its own
+ *                 included, with a CORS fetch to detect modified scripts).
+ *
+ * When the inline config (window.__PROTE_INLINE__) is embedded the inline content changes, so the
+ * static hash no longer applies; the hash of the actual content is then whitelisted dynamically at
+ * render time through Magento\Framework\View\Helper\SecureHtmlRenderer (Magento_Csp's InlineUtil
+ * processor). See Proteside\Checkout\Model\Injector.
+ *
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="proteside-cdn" type="host">https://cdn.proteside.com</value>
+                <value id="proteside-bootstrapper-1-1-3" type="hash" algorithm="sha256">t2ypUgwBPt6N82k2gXq5D5ZHIdxOXxhj6ZISJatVbg8=</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="proteside-app" type="host">https://app.proteside.com</value>
+                <value id="proteside-cdn-connect" type="host">https://cdn.proteside.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

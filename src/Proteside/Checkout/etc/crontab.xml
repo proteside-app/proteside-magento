@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Scheduled revalidation of the Proteside entitlement and remote config (only HTTP 200 and 401 change the decision; 429/5xx/timeouts keep the previous state, with a 48-hour tolerance after the last success).
+ * The expression lives in config so the admin can pick 6 h / 12 h / 24 h
+ * (Stores > Configuration > Security > Proteside > Connection status > Re-check status every).
+ *
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="proteside_checkout_revalidate" instance="Proteside\Checkout\Cron\Revalidate" method="execute">
+            <config_path>crontab/default/jobs/proteside_checkout_revalidate/schedule/cron_expr</config_path>
+        </job>
+    </group>
+</config>

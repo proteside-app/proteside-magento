@@ -1,0 +1,88 @@
+<?php
+/**
+ * Connection status row (Stores > Configuration > Security > Proteside > Connection status).
+ * No inline JavaScript: the button is initialised with data-mage-init (CSP-safe in admin).
+ *
+ * @var \Proteside\Checkout\Block\Adminhtml\System\Config\Status $block
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+
+$state = $block->getState();
+$checkConfig = ['Proteside_Checkout/js/status-check' => [
+    'url' => $block->getCheckUrl(),
+    'checkingLabel' => (string)__('Checking…'),
+]];
+?>
+<div class="proteside-status" style="line-height:1.6">
+    <?php if (!$block->hasValidKey()): ?>
+        <p>
+            <span class="grid-severity-minor"><span><?= $block->escapeHtml(__('Not verified yet')) ?></span></span>
+            <?= $block->escapeHtml(__('Enter your SDK key above and save the configuration to connect this store to Proteside.')) ?>
+        </p>
+        <p>
+            <?= $block->escapeHtml(__("Don't have an account yet?")) ?>
+            <a href="<?= $block->escapeUrl($block->getPlansUrl()) ?>" target="_blank" rel="noopener"><?= $block->escapeHtml(__('Get Proteside')) ?></a>
+        </p>
+    <?php else: ?>
+        <p>
+            <span class="<?= $block->escapeHtmlAttr($block->getSeverityClass()) ?>"><span><?= $block->escapeHtml($block->getStatusLabel()) ?></span></span>
+            <strong><?= $block->escapeHtml(__('Plan: %1', $block->getPlan())) ?></strong>
+            &middot; <?= $block->escapeHtml($block->getCheckedAgo()) ?>
+            <?php if (!$block->isEnabled()): ?>
+                &middot; <em><?= $block->escapeHtml(__('Module disabled for this scope ("Enabled" = No).')) ?></em>
+            <?php endif; ?>
+        </p>
+
+        <?php foreach ($block->getNotices() as $notice): ?>
+            <?php $cls = $notice['type'] === 'error' ? 'message-error' : ($notice['type'] === 'warning' ? 'message-warning' : 'message-notice'); ?>
+            <div class="message <?= $block->escapeHtmlAttr($cls) ?>" style="margin:4px 0"><?= $block->escapeHtml($notice['message']) ?></div>
+        <?php endforeach; ?>
+
+        <table class="admin__table-secondary" style="margin-top:8px">
+            <tbody>
+            <tr>
+                <th><?= $block->escapeHtml(__('Decision')) ?></th>
+                <td><?= $block->escapeHtml($block->getDecisionLabel()) ?></td>
+            </tr>
+            <tr>
+                <th><?= $block->escapeHtml(__('SDK key')) ?></th>
+                <td><code><?= $block->escapeHtml($block->getSdkKey()) ?></code></td>
+            </tr>
+            <tr>
+                <th><?= $block->escapeHtml(__('Last successful check')) ?></th>
+                <td><?= $block->escapeHtml($block->getLastSuccessAgo()) ?><?php if ((int)($state['http_code'] ?? 0) > 0): ?> (HTTP <?= (int)$state['http_code'] ?>)<?php endif; ?></td>
+            </tr>
+            <tr>
+                <th><?= $block->escapeHtml(__('Release channel')) ?></th>
+                <td><?= $block->escapeHtml($block->getEffectiveChannel()) ?><?php if ($block->getConfiguredChannel() === \Proteside\Checkout\Model\Config::CHANNEL_AUTO): ?> (<?= $block->escapeHtml(__('Follow the dashboard (recommended)')) ?>)<?php endif; ?></td>
+            </tr>
+            <tr>
+                <th><?= $block->escapeHtml(__('Bundled bootstrapper version')) ?></th>
+                <td><?= $block->escapeHtml($block->getBootstrapperVersion()) ?> <small>&middot; sha256-<?= $block->escapeHtml($block->getBootstrapperHash()) ?></small></td>
+            </tr>
+            <tr>
+                <th><?= $block->escapeHtml(__('Inline rules / GTM containers')) ?></th>
+                <td>
+                    <?= (int)$block->getInlineRulesCount() ?> / <?= (int)$block->getInlineGtmCount() ?>
+                    <?php if (!$block->isInlineRulesEnabled()): ?><small>(<?= $block->escapeHtml(__('inline config disabled')) ?>)</small><?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <th><?= $block->escapeHtml(__('Module version')) ?></th>
+                <td><?= $block->escapeHtml($block->getModuleVersion()) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <button type="button" class="action-default scalable" data-mage-init='<?= $block->escapeHtmlAttr(json_encode($checkConfig)) ?>'>
+                <span><?= $block->escapeHtml(__('Check status')) ?></span>
+            </button>
+            <a class="action-secondary" href="<?= $block->escapeUrl($block->getDashboardUrl()) ?>" target="_blank" rel="noopener"><?= $block->escapeHtml(__('Open Proteside dashboard')) ?></a>
+            <a class="action-secondary" href="<?= $block->escapeUrl($block->getDocsUrl()) ?>" target="_blank" rel="noopener"><?= $block->escapeHtml(__('Documentation')) ?></a>
+        </div>
+
+        <p class="note"><?= $block->escapeHtml(__('Open your checkout and run Proteside.getStatus() in the browser console. installationOrderValid must be true.')) ?></p>
+    <?php endif; ?>
+</div>

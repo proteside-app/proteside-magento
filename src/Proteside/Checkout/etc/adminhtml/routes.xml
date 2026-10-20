@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Admin route for the "Check status" button: POST /admin/proteside/status/check
+ *
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="admin">
+        <route id="proteside" frontName="proteside">
+            <module name="Proteside_Checkout" before="Magento_Backend"/>
+        </route>
+    </router>
+</config>

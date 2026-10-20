@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Stores > Configuration > Security > Proteside
+ *
+ * Labels follow the wording of the Proteside dashboard.
+ * Placeholders use Magento's %1 convention.
+ *
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <!-- The "Security" tab already exists in Magento 2.4 (Magento_Security); declaring it here only merges
+             and guarantees the section is visible if that module is disabled. -->
+        <tab id="security" translate="label" sortOrder="500">
+            <label>Security</label>
+        </tab>
+        <section id="proteside" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Proteside</label>
+            <tab>security</tab>
+            <resource>Proteside_Checkout::config</resource>
+
+            <group id="general" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Proteside checkout protection</label>
+                <comment><![CDATA[Helps you meet PCI DSS 4.0 requirements 6.4.3 and 11.6.1 by loading the Proteside client-side protection on your payment pages. <a href="https://app.proteside.com" target="_blank" rel="noopener">Open Proteside dashboard</a> &middot; <a href="https://docs.proteside.com" target="_blank" rel="noopener">Documentation</a> &middot; Don't have an account yet? <a href="https://app.proteside.com/plans" target="_blank" rel="noopener">Get Proteside</a>]]></comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sdk_key" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>SDK key</label>
+                    <comment>Paste the public key from your Proteside dashboard (Settings → Pages and Domains). Format: pk_live_ followed by 32 hex characters. It is public by design.</comment>
+                    <backend_model>Proteside\Checkout\Model\Config\Backend\SdkKey</backend_model>
+                    <validate>validate-length maximum-length-40</validate>
+                </field>
+            </group>
+
+            <group id="status" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Connection status</label>
+                <field id="info" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>Proteside\Checkout\Block\Adminhtml\System\Config\Status</frontend_model>
+                </field>
+                <field id="interval" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Re-check status every</label>
+                    <source_model>Proteside\Checkout\Model\Config\Source\Interval</source_model>
+                    <backend_model>Proteside\Checkout\Model\Config\Backend\Interval</backend_model>
+                    <comment>Runs through Magento cron (group "default"). The status is also refreshed when you save this section or click "Check status".</comment>
+                </field>
+            </group>
+
+            <group id="pages" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Where to load the protection</label>
+                <comment>Pages are detected by Magento action name (checkout_index_index, checkout_onepage_success, multishipping_checkout_*, checkout_cart_index), never by URL.</comment>
+                <field id="checkout" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Checkout (all steps)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="order_success" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Order confirmation (thank you)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>The SDK uses this page to confirm card payments. Keep it enabled.</comment>
+                </field>
+                <field id="cart" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Cart</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="all_store" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Entire store</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="custom_paths" translate="label comment" type="textarea" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom URL patterns (one per line, * as wildcard)</label>
+                    <comment>Matched against the request path (e.g. /paypal/express/review or /payment/*). A line without "/" is matched against the full action name (e.g. paypal_express_review).</comment>
+                </field>
+            </group>
+
+            <group id="options" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Options</label>
+                <field id="channel" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Release channel</label>
+                    <source_model>Proteside\Checkout\Model\Config\Source\Channel</source_model>
+                </field>
+                <field id="calibration" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Calibration (seconds)</label>
+                    <comment>Only used when the remote configuration cannot be fetched. Normally the value from the dashboard applies.</comment>
+                    <validate>validate-digits validate-digits-range digits-range-10-120</validate>
+                </field>
+                <field id="inline_rules" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Embed blocking rules in the page (inline config)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Copies your active rules and allowed GTM containers from the dashboard into the bootstrapper so blocking starts from the first byte. Refreshed on every status check.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

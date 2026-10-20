@@ -1,0 +1,44 @@
+{
+    "name": "proteside/module-checkout",
+    "description": "Proteside checkout protection for Magento 2 / Adobe Commerce: helps you meet PCI DSS 4.0 requirements 6.4.3 and 11.6.1 by loading the Proteside client-side protection on your payment pages.",
+    "type": "magento2-module",
+    "version": "1.0.2",
+    "license": "MIT",
+    "homepage": "https://proteside.com",
+    "support": {
+        "email": "team@proteside.com",
+        "docs": "https://docs.proteside.com"
+    },
+    "keywords": [
+        "magento2",
+        "adobe-commerce",
+        "proteside",
+        "pci-dss",
+        "checkout",
+        "security",
+        "e-skimming"
+    ],
+    "require": {
+        "php": "~7.4.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+        "magento/framework": "^103.0",
+        "magento/module-backend": "^102.0",
+        "magento/module-config": "^101.2",
+        "magento/module-store": "^101.1",
+        "magento/module-checkout": "^100.4",
+        "magento/module-page-cache": "^100.4"
+    },
+    "suggest": {
+        "magento/module-csp": "Whitelists the inline bootstrapper hash and the Proteside hosts in the Content-Security-Policy headers (bundled with Magento 2.3.5+).",
+        "magento/module-multishipping": "Protection on the multi-address checkout pages."
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Proteside\\Checkout\\": ""
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

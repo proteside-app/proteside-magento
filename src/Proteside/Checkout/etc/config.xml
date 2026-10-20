@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Default configuration values. Paths are read by \Proteside\Checkout\Model\Config.
+ *
+ * @package   Proteside_Checkout
+ * @license   MIT
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <proteside>
+            <general>
+                <enabled>0</enabled>
+                <sdk_key/>
+            </general>
+            <pages>
+                <checkout>1</checkout>
+                <order_success>1</order_success>
+                <cart>0</cart>
+                <all_store>0</all_store>
+                <custom_paths/>
+            </pages>
+            <options>
+                <channel>auto</channel>
+                <calibration/>
+                <inline_rules>1</inline_rules>
+            </options>
+            <status>
+                <interval>6</interval>
+            </status>
+        </proteside>
+        <crontab>
+            <default>
+                <jobs>
+                    <proteside_checkout_revalidate>
+                        <schedule>
+                            <!-- Every 6 hours by default; rewritten by Proteside\Checkout\Model\Config\Backend\Interval -->
+                            <cron_expr>0 */6 * * *</cron_expr>
+                        </schedule>
+                    </proteside_checkout_revalidate>
+                </jobs>
+            </default>
+        </crontab>
+    </default>
+</config>
